@@ -1,0 +1,13 @@
+# Data files (download from the benchmark, do not commit)
+*.mat
+*.csv
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# Outputs
+outputs/
+*.zip
+*.pt
+*.png
+*.pdf
