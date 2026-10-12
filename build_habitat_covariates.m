@@ -1,5 +1,5 @@
 % build_habitat_covariates.m
-% Covariate-only habitat predictor eta_hab for the PINN (review comment 2).
+% Covariate-only habitat predictor eta_hab for the PINN (independent of u_GLM).
 % Same construction as the GLM4 map in the benchmark script
 % Matlab_src/LIAS_internal_report_production.m, WITHOUT the Year term and
 % WITHOUT the Longitude/Latitude terms.  Run it in the folder that contains the

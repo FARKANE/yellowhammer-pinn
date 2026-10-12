@@ -2,17 +2,17 @@
 forward_solver.py
 =================
 Finite-volume solver for the habitat-modulated reaction-diffusion model on the
-France mask, used for three things the review asks for:
+France mask, used for three things:
 
 1. Forward-simulation (output-error) validation of the PINN estimates: solve the
    PDE with the identified coefficients from the 2002 field and compare every
-   year with the reference (comment 6).
+   year with the reference.
 2. The principal eigenvalue lambda_1 of  -Diff[phi] - r(H) phi = lambda phi
    with zero-flux boundaries (Theorem 2): lambda_1 < 0 -> persistence,
-   lambda_1 >= 0 -> extinction (comment 3f).
+   lambda_1 >= 0 -> extinction.
 3. A classical identification baseline: output-error least squares with
    gradients obtained by automatic differentiation through the solver (the
-   discrete adjoint), on the same reference field (comment 7).
+   discrete adjoint), on the same reference field.
 
 Discretisation
 --------------

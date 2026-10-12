@@ -7,15 +7,15 @@ finite-volume solver (forward_solver.py).
 
 Two habitat sources are supported
 ---------------------------------
-* ``habitat_mat=None`` (legacy, first submission): the index is derived from the
+* ``habitat_mat=None`` (version 1): the index is derived from the
   denoised field itself,
 
       H0 = u_GLM / u_sat,   Z = logit(clip(H0, eps, 1 - eps)).
 
   Because u_GLM is also the PINN training target, this construction is
   *circular*: K(H) and r(H) become functions of a smoothed copy of the target,
-  and the GLM Year trend (the national decline) is inside H.  It is kept only to
-  reproduce the submitted results.
+  and the GLM Year trend (the national decline) is inside H.  It is kept to
+  reproduce the version-1 results.
 
 * ``habitat_mat="H_covariates_2002_2024.mat"`` (recommended): the index is
   derived from an independent, covariate-only linear predictor ``eta_hab`` (the
@@ -264,9 +264,9 @@ class HabitatField:
 
     # --------------------------------------------------------------- sampling
     def sample_glm(self, n, seed=0):
-        """LEGACY sampler (first submission): draws (slice, node) WITH replacement,
+        """Version-1 sampler: draws (slice, node) WITH replacement,
         so identical records can appear in both training and test sets.  Kept only
-        to reproduce the submitted numbers; use sample_glm_records instead."""
+        to reproduce the version-1 numbers; use sample_glm_records instead."""
         rng = np.random.default_rng(seed)
         ii, jj = np.where(self.M)
         ki = rng.integers(0, self.nk, size=n)

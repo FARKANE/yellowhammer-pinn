@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Classical identification baseline (review comment 7): output-error least squares
+Classical identification baseline: output-error least squares
 on the SAME reference field, the SAME model and the SAME train/test geometry as
 the PINN, with gradients by automatic differentiation through a finite-volume
 solver (equivalent to a discrete adjoint).

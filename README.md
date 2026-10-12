@@ -10,15 +10,15 @@ from French Breeding Bird Survey data (2002–2024) with physics-informed
 neural networks (PINNs), and checked against a finite-volume solver and a
 classical output-error identification.
 
-> **Revision.** The corrected protocol is the default (`--preset revised`).
-> `--preset paper` reproduces the submitted pipeline bit for bit. See
-> [`CHANGELOG.md`](CHANGELOG.md) for every fix and the review comment it answers.
+> **Version 2.** The corrected protocol is the default (`--preset recommended`).
+> `--preset v1` reproduces version 1 of this code bit for bit. See
+> [`CHANGELOG.md`](CHANGELOG.md) for every change.
 
 ## Repository contents
 
 | File | Description |
 |---|---|
-| `pinn_yellowhammer.py` | PINN model, trainer, configurations (`paper_config`, `revised_config`), diagnostics (mass balance, dense residual) |
+| `pinn_yellowhammer.py` | PINN model, trainer, configurations (`v1_config`, `recommended_config`), diagnostics (mass balance, dense residual) |
 | `habitat_field.py` | Habitat index H(t,x,y), its gradient and Laplacian; legacy (from `u_GLM`) or covariate-only source |
 | `forward_solver.py` | Finite-volume solver with zero-flux boundaries, principal eigenvalue λ₁, output-error identification |
 | `diagnostics.py` | Forward-simulation validation, λ₁ series, figures |
@@ -48,7 +48,7 @@ Benchmark: https://github.com/lias-laboratory/yellowhammer-benchmark
 
 ### Habitat index
 Without `--habitat-mat`, H is derived from `u_GLM` itself (the training target), as in
-the submission; the coefficients are then conditional on that circular construction
+version 1; the coefficients are then conditional on that circular construction
 and a warning is printed. To build an independent index:
 
 ```bash
@@ -62,15 +62,15 @@ python tools/build_habitat_covariates.py --data-dir data --out H_covariates_2002
 ```bash
 pip install -r requirements.txt
 
-# Experiment 1, corrected protocol: 100 km spatial-block test set, selection subset,
+# Experiment 1, recommended protocol: 100 km spatial-block test set, selection subset,
 # source-sink reaction, 5 seeds, all diagnostics and figures in ./outputs
 python run_experiment1.py --data-dir data --habitat-mat H_covariates_2002_2024.mat
 
 # temporal hold-out: fit 2002-2018, predict 2019-2024
 python run_experiment1.py --data-dir data --test-years 2019-2024 --out-dir outputs_temporal
 
-# the submitted pipeline, unchanged
-python run_experiment1.py --data-dir data --preset paper --out-dir outputs_paper
+# version 1 of this code, unchanged
+python run_experiment1.py --data-dir data --preset v1 --out-dir outputs_v1
 
 # identifiability and sensitivity
 python run_profiles.py --data-dir data --param D0 --values 0,1,3,10,30,100,300,1000,3000 --seeds 0 1 2

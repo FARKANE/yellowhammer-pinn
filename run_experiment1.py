@@ -2,11 +2,11 @@
 """
 Experiment 1 - field reconstruction and coefficient identification (offline).
 
-    # corrected protocol (spatial-block test set, selection subset, source-sink reaction)
+    # recommended protocol (spatial-block test set, selection subset, source-sink reaction)
     python run_experiment1.py --data-dir data
 
-    # reproduce the submitted pipeline exactly (including its defects)
-    python run_experiment1.py --data-dir data --preset paper
+    # reproduce version 1 of this code exactly (including its defects)
+    python run_experiment1.py --data-dir data --preset v1
 
     # temporal hold-out: fit 2002-2018, predict 2019-2024
     python run_experiment1.py --data-dir data --test-years 2019-2024

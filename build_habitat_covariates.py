@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Build a covariate-only habitat predictor eta_hab(x, y, year) on the 2 km grid
-(review comment 2: the submitted H was a smoothed copy of the training target).
+(the version-1 H was a smoothed copy of the training target, u_GLM).
 
 This is a line-by-line port of the GLM4 map construction of the benchmark
 (Matlab_src/LIAS_internal_report_production.m, "Simulation of the GLM niche

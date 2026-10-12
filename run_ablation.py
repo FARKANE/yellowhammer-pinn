@@ -3,11 +3,11 @@
 Ablation of targets, architecture and PDE weight (Table 3 of the manuscript).
 
 Every field row is evaluated on the SAME held-out test records (same seed, same
-split).  The "no physics" row is now scored on held-out records too (the first
-submission reported its TRAINING R2, which is not comparable).
+split).  The "no physics" row is scored on held-out records too (version 1
+reported its TRAINING R2, which is not comparable).
 
-    python run_ablation.py --data-dir data                 # corrected protocol
-    python run_ablation.py --data-dir data --preset paper  # submitted protocol
+    python run_ablation.py --data-dir data                 # recommended protocol
+    python run_ablation.py --data-dir data --preset v1     # version-1 protocol
 """
 import argparse
 import os

@@ -6,7 +6,7 @@ import sys
 import warnings
 from dataclasses import replace
 
-from pinn_yellowhammer import paper_config, revised_config
+from pinn_yellowhammer import v1_config, recommended_config
 
 BENCHMARK_URL = "https://github.com/lias-laboratory/yellowhammer-benchmark"
 
@@ -44,8 +44,8 @@ def add_common_args(ap: argparse.ArgumentParser):
     g.add_argument("--year1", type=int, default=None, help="end of the PDE time window (default 2024)")
 
     m = ap.add_argument_group("model / protocol")
-    m.add_argument("--preset", choices=["paper", "revised"], default="revised",
-                   help="paper = submitted pipeline (incl. its defects); revised = corrected protocol")
+    m.add_argument("--preset", choices=["v1", "recommended"], default="recommended",
+                   help="v1 = version 1 of this code (incl. its defects); recommended = corrected protocol")
     m.add_argument("--reaction", choices=["logistic", "source_sink"], default=None)
     m.add_argument("--beta-min", type=float, default=None)
     m.add_argument("--diffusion", choices=["fickian", "ecological"], default=None)
@@ -68,7 +68,7 @@ def add_common_args(ap: argparse.ArgumentParser):
 
 
 def config_from_args(args, **extra):
-    builder = paper_config if args.preset == "paper" else revised_config
+    builder = v1_config if args.preset == "v1" else recommended_config
     p = lambda name: os.path.join(args.data_dir, name)
     kw = dict(u_mat=p(args.u_mat), map_mat=p(args.map_mat), csv=p(args.csv),
               habitat_mat=p(args.habitat_mat) if args.habitat_mat else "",

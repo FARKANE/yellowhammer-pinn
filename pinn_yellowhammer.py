@@ -25,7 +25,7 @@ d/dt int u = int r u (1 - u/K) > 0 whenever u < K, so the model cannot produce t
 observed national decline; the decline is then carried by the residual or by
 boundary leakage (see Trainer.mass_balance).
 
-Protocol switches (defaults = corrected protocol; paper_config() = submitted one):
+Protocol switches (defaults = corrected protocol; v1_config() = version 1 of this code):
   sample_replace  False: GLM records drawn WITHOUT replacement (legacy True could
                   put the same record in train and test).
   ic_source       "train_nodes": IC targets are exact u_GLM(2002) values at grid
@@ -133,31 +133,31 @@ class Config:
         return d
 
 
-# Settings of the submitted manuscript (Table 2)
-PAPER_SETTINGS = dict(
+# Network, sampling and optimisation settings (Table 2 of the manuscript)
+BASE_SETTINGS = dict(
     n_collocation=5000, n_ic=2500, n_boundary=1200, use_glm_data=True,
     n_glm=60000, train_frac=0.70, fix_Kmax_tilde=1.2,
     layers=(3, 128, 128, 128, 128, 1), fourier_m=96, fourier_sigma=5.0,
     w_res=0.15, w_data=6.0, w_ic=3.0, w_bc=0.05, res_ramp_steps=900,
     adam_steps=5000, adam_lr=3e-3, lbfgs_steps=500)
 
-LEGACY_PROTOCOL = dict(sample_replace=True, ic_source="lhs", bc_time="mid",
+V1_PROTOCOL = dict(sample_replace=True, ic_source="lhs", bc_time="mid",
                        split="random", select_frac=0.0,
                        reaction="logistic", diffusion="fickian")
 
-REVISED_PROTOCOL = dict(sample_replace=False, ic_source="train_nodes", bc_time="uniform",
+RECOMMENDED_PROTOCOL = dict(sample_replace=False, ic_source="train_nodes", bc_time="uniform",
                         split="block", block_km=100.0, select_frac=0.10,
                         reaction="source_sink", beta_min=-1.0, diffusion="fickian")
 
 
-def paper_config(**overrides):
-    """Exactly the submitted pipeline (including its sampling/boundary defects)."""
-    return Config(**{**PAPER_SETTINGS, **LEGACY_PROTOCOL, **overrides})
+def v1_config(**overrides):
+    """Exactly the version-1 pipeline of this repository (including its sampling/boundary defects)."""
+    return Config(**{**BASE_SETTINGS, **V1_PROTOCOL, **overrides})
 
 
-def revised_config(**overrides):
-    """Recommended configuration for the revision."""
-    return Config(**{**PAPER_SETTINGS, **REVISED_PROTOCOL, **overrides})
+def recommended_config(**overrides):
+    """Recommended configuration (corrected protocol, source-sink reaction, block split)."""
+    return Config(**{**BASE_SETTINGS, **RECOMMENDED_PROTOCOL, **overrides})
 
 
 # --------------------------------------------------------------------------- model
@@ -191,7 +191,7 @@ class MLP(nn.Module):
 
 class PINN(nn.Module):
     """Field network + constrained dimensionless parameters.
-    State-dict keys are those of the first submission, so old weights load."""
+    State-dict keys are those of version 1, so old weights load."""
 
     def __init__(self, cfg: Config):
         super().__init__()
@@ -423,7 +423,7 @@ class Trainer:
 
     def _build_boundary(self):
         c = self.cfg
-        if c.bc_time == "mid":                         # legacy construction (first submission)
+        if c.bc_time == "mid":                         # version-1 construction
             Xfr, Yfr = self.hf.Xfr, self.hf.Yfr
             finite = np.isfinite(Xfr) & np.isfinite(Yfr)
             xs, ys = Xfr[finite], Yfr[finite]
@@ -736,7 +736,7 @@ class Trainer:
     @classmethod
     def from_checkpoint(cls, path, build_points=True, **overrides):
         """Load a checkpoint written by save(), or a bare state_dict (old pinn_weights.pt;
-        pass the matching Config fields as overrides, e.g. paper_config fields)."""
+        pass the matching Config fields as overrides, e.g. v1_config fields)."""
         obj = torch.load(path, map_location="cpu", weights_only=False)
         if isinstance(obj, dict) and "state_dict" in obj:
             cfgd = dict(obj["config"]); state = obj["state_dict"]

@@ -1,14 +1,14 @@
 """
 diagnostics.py
 ==============
-Post-training checks requested in the review, shared by the scripts and notebooks.
+Post-training checks shared by the scripts and notebooks.
 
   mass_balance_report   per-year split of d<u>/dt into diffusion / reaction /
-                        residual / boundary flux (comment 1)
+                        residual / boundary flux
   forward_validation    solve the PDE with the PINN coefficients and compare
                         with the reference, by year and on held-out cells
-                        (comment 6, output-error validation)
-  eigenvalue_series     lambda_1 per year for the identified model (comment 3f)
+                        (output-error validation)
+  eigenvalue_series     lambda_1 per year for the identified model
   plot_*                matching figures
 """
 
@@ -115,7 +115,7 @@ def plot_trajectories(fv, path, highlight_years=None):
 
 def plot_response_curves(tr, path):
     """Identified a(H), r(H), K(H) with the unsupported H range shaded and the
-    distribution of H over the domain (review comment 2)."""
+    distribution of H over the domain."""
     plt = _plt()
     rc = tr.response_curves()
     sup = tr.H_support()

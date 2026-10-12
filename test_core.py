@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(HERE))
 
 from habitat_field import HabitatField                                    # noqa: E402
 from forward_solver import FVSolver                                       # noqa: E402
-from pinn_yellowhammer import Trainer, Config, paper_config, revised_config  # noqa: E402
+from pinn_yellowhammer import Trainer, Config, v1_config, recommended_config  # noqa: E402
 from synthetic import make                                                # noqa: E402
 
 TINY = dict(n_collocation=300, n_ic=150, n_boundary=100, n_glm=3000, layers=(3, 16, 16, 1),
@@ -88,14 +88,14 @@ def test_principal_eigenvalue(hf, diffusion):
 
 
 # ------------------------------------------------------------------ trainer
-def test_paper_preset_reproduces_legacy_protocol(data):
-    tr = Trainer(paper_config(**{k: v for k, v in data.items() if k != "habitat_mat"}, **TINY))
-    assert torch.unique(tr.bc["txy"][:, 0]).tolist() == [0.5]          # the submitted defect
+def test_v1_preset_reproduces_v1_protocol(data):
+    tr = Trainer(v1_config(**{k: v for k, v in data.items() if k != "habitat_mat"}, **TINY))
+    assert torch.unique(tr.bc["txy"][:, 0]).tolist() == [0.5]          # the version-1 defect
     assert tr.sel is None
 
 
-def test_revised_protocol_is_disjoint(data):
-    tr = Trainer(revised_config(**data, **TINY))
+def test_recommended_protocol_is_disjoint(data):
+    tr = Trainer(recommended_config(**data, **TINY))
     rec = tr.rec
     key = lambda ii: set(zip(rec["k"][ii], rec["I"][ii], rec["J"][ii]))
     assert not key(tr.idx_train) & key(tr.idx_test)
@@ -108,7 +108,7 @@ def test_revised_protocol_is_disjoint(data):
 
 
 def test_temporal_split(data):
-    tr = Trainer(revised_config(**data, **TINY, split="temporal", test_years=tuple(range(2019, 2025))))
+    tr = Trainer(recommended_config(**data, **TINY, split="temporal", test_years=tuple(range(2019, 2025))))
     assert set(np.unique(tr.rec["year"][tr.idx_test])) <= set(range(2019, 2025))
     assert not set(np.unique(tr.rec["year"][tr.idx_train])) & set(range(2019, 2025))
 
@@ -116,7 +116,7 @@ def test_temporal_split(data):
 @pytest.mark.parametrize("kw", [dict(), dict(diffusion="ecological"), dict(use_advection=True),
                                 dict(reaction="logistic")])
 def test_train_and_mass_balance_identity(data, kw):
-    tr = Trainer(revised_config(**data, **TINY, **kw))
+    tr = Trainer(recommended_config(**data, **TINY, **kw))
     tr.train(verbose=False)
     rows = tr.mass_balance(years=[2005, 2015], nx=30, ny=30, n_boundary=300)
     for r in rows:
@@ -127,7 +127,7 @@ def test_train_and_mass_balance_identity(data, kw):
 
 
 def test_fixed_parameters_and_checkpoint(data, tmp_path):
-    cfg = revised_config(**data, **TINY, fixed=dict(D0=0.0, beta=-0.3))
+    cfg = recommended_config(**data, **TINY, fixed=dict(D0=0.0, beta=-0.3))
     tr = Trainer(cfg)
     tr.train(verbose=False)
     p = tr.physical_params()

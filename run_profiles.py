@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Profiles and sensitivity analyses (review comment 5).
+Profiles and sensitivity analyses of the identified coefficients.
 
     # profile of D0 on a log grid (km^2/yr), 3 seeds per point
     python run_profiles.py --data-dir data --param D0 --values 0,1,3,10,30,100,300,1000,3000 --seeds 0 1 2
